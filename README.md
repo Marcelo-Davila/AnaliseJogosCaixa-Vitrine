@@ -21,6 +21,17 @@ distribuições seguem o acaso e mostrar que nenhuma regra de escolha de dezenas
 aumenta a chance de ganhar. O que muda a probabilidade é apenas a quantidade de
 dezenas por combinação (cobertura).
 
+## Propósito de aprendizado
+
+Projeto de estudo para **levar uma aplicação full stack à nuvem**: backend,
+frontend, banco, autenticação, deploy e operação. O tema é o pretexto para
+exercitar o ciclo completo — modelagem de dados com migrations, API REST em
+.NET, SPA em React, login OIDC com Keycloak, nginx + HTTPS numa EC2 da AWS,
+serviço no `systemd`, DDNS, backup e segredos em variáveis de ambiente.
+
+Arquitetura, **padrões de projeto** e decisões estão em
+[`Docs/ARQUITETURA.md`](Docs/ARQUITETURA.md).
+
 ## Funcionalidades
 
 - **Importação** dos resultados oficiais, pelos últimos N concursos ou pelo
@@ -63,7 +74,8 @@ flowchart LR
     K --> KP[(Postgres do Keycloak)]
 ```
 
-Detalhes, decisões e fluxos em [`Docs/ARQUITETURA.md`](Docs/ARQUITETURA.md).
+Camadas, padrões de projeto, decisões e fluxos em
+[`Docs/ARQUITETURA.md`](Docs/ARQUITETURA.md).
 
 ## Modelo de dados
 
@@ -148,7 +160,7 @@ MySQL e Keycloak sem exposição pública de portas. Detalhes em
 
 ## Documentação
 
-- [Arquitetura e decisões](Docs/ARQUITETURA.md)
+- [Arquitetura, padrões de projeto e decisões](Docs/ARQUITETURA.md)
 - [UML](Docs/UML.md)
 - [Estrutura de pastas](Docs/ESTRUTURA.md)
 
