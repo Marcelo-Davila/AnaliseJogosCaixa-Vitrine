@@ -32,6 +32,19 @@ serviço no `systemd`, DDNS, backup e segredos em variáveis de ambiente.
 Arquitetura, **padrões de projeto** e decisões estão em
 [`Docs/ARQUITETURA.md`](Docs/ARQUITETURA.md).
 
+## Uso de IA
+
+O desenvolvimento contou com **apoio de assistentes de IA** para implementação,
+documentação e revisão. A condução, porém, foi humana: a análise do problema, o
+escopo, as decisões de arquitetura, os critérios de qualidade e a validação do
+que foi entregue foram definidos e revisados por mim (Marcelo Dávila). A IA
+atuou como ferramenta sob direção, não de forma autônoma.
+
+Além de aprender a levar a aplicação à nuvem, o projeto teve um segundo
+objetivo: **validar o uso de IA no desenvolvimento** na prática — quanto ela
+acelera, onde erra, quanto exige revisão e como manter responsabilidade sobre o
+código final.
+
 ## Funcionalidades
 
 - **Importação** dos resultados oficiais, pelos últimos N concursos ou pelo

@@ -5,8 +5,10 @@ decisões, fluxos principais e ambientes. Descreve a solução sem expor as regr
 de negócio implementadas no repositório privado.
 
 > **Contexto:** projeto de estudo para **levar uma aplicação full stack à
-> nuvem**. O tema (Mega Sena) é o pretexto para exercitar modelagem de dados,
-> API REST, SPA, autenticação, deploy e operação — ver
+> nuvem** — e para **validar o uso de IA no desenvolvimento**, com a análise e
+> as decisões conduzidas por mim (Marcelo Dávila). O tema (Mega Sena) é o
+> pretexto para exercitar modelagem de dados, API REST, SPA, autenticação,
+> deploy e operação — ver
 > [Propósito de aprendizado](#propósito-de-aprendizado).
 
 ## Visão geral
@@ -255,3 +257,13 @@ A escolha de manter a aplicação em uma EC2, em vez de um PaaS, foi deliberada:
 o objetivo é entender na prática as peças que normalmente ficam escondidas —
 proxy reverso, certificado, serviços do sistema, processo de publicação e
 configuração por ambiente.
+
+### Uso de IA
+
+O projeto também serviu para **validar o uso de IA no desenvolvimento**. A IA
+foi usada como ferramenta de implementação, documentação e revisão, sempre sob
+direção humana: a análise do problema, o escopo, as decisões de arquitetura, os
+critérios de qualidade e a revisão final foram conduzidos por mim (Marcelo
+Dávila). O objetivo foi medir, na prática, o ganho de produtividade, os pontos
+em que a ferramenta erra e o quanto de revisão crítica o uso de IA exige para
+manter a responsabilidade sobre o código entregue.
