@@ -9,8 +9,6 @@ por usuário autenticado.
 > ficam públicos apenas a ideia, a arquitetura, o modelo de dados e a estrutura
 > de pastas — sem as regras de negócio.
 
-**Aplicação publicada:** `https://analisejogoscaixa.ddns.net`
-
 ## Objetivo
 
 Gerar **estatísticas** sobre os sorteios — e não prever ou descobrir os números
