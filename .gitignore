@@ -1,0 +1,7 @@
+# Arquivos ignorados localmente (não versionar)
+.vscode/
+.idea/
+Thumbs.db
+Desktop.ini
+.DS_Store
+*.log
