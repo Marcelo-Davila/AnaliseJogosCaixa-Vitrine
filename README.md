@@ -232,6 +232,11 @@ as apostas geradas a esse grupo.
 
 ## Produção
 
+Aplicação disponível em: <https://analisejogoscaixa.ddns.net/>.
+
+> **Aviso:** a aplicação pode não estar disponível no momento em que você tentar
+> acessá-la.
+
 Deploy em uma instância EC2 (Amazon Linux 2023): nginx com HTTPS (Let's Encrypt)
 servindo o frontend estático e fazendo proxy do backend e do Keycloak; banco
 MySQL e Keycloak sem exposição pública de portas. Detalhes em
