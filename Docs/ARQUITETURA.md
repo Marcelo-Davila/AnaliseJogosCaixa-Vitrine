@@ -30,8 +30,8 @@ flowchart LR
 |------------|-------------------------------------------------------------------------|
 | Frontend   | SPA React que consome a API e conduz o login OIDC                        |
 | nginx      | TLS, arquivos estáticos do frontend e proxy de `/api`, `/realms`, `/resources` |
-| Backend    | API REST: importação, estatísticas, apostas e doação                     |
-| MySQL      | Concursos, dezenas sorteadas e apostas dos usuários                      |
+| Backend    | API REST: importação, estatísticas, apostas, desdobramentos e doação      |
+| MySQL      | Loterias, concursos, dezenas, apostas, grupos e validações                |
 | Keycloak   | Identidade, cadastro, login e emissão dos tokens                         |
 
 ## Camadas
@@ -49,11 +49,20 @@ flowchart TB
 
 - **Controllers** — expõem os endpoints REST e a autorização (`[Authorize]` nas
   rotas de aposta). Não contêm regra de negócio.
-- **Services** — concentram a regra: importação da Caixa, importação de planilha,
-  estatística, aposta e doação.
+- **Services** — concentram os casos de uso: importação, estatística, aposta,
+  grupo de desdobramento e doação.
 - **Data** — `DbContext` (EF Core + Pomelo) e migrations versionadas.
-- **Model** — entidades (`Concurso`, `ConcursoDezena`, `Aposta`, `ApostaDezena`)
-  e DTOs de entrada/saída, mantendo a API desacoplada das entidades.
+- **Model** — entidades de loteria, concurso, aposta e grupo de desdobramento,
+  além de DTOs de entrada/saída que mantêm a API desacoplada das entidades.
+
+O modelo de concursos e apostas inclui a dimensão **Loteria**. O número do
+concurso é único dentro de cada modalidade, portanto `Concurso` é identificado
+por `(LoteriaId, Numero)`. A Mega Sena é a modalidade cadastrada atualmente.
+
+Um **GrupoDesdobramento** é uma entidade independente de `Aposta`: registra o
+conjunto de dezenas e pode ser associado a várias apostas. As apostas podem
+manter o vínculo com o grupo de origem; cada grupo e cada aposta pertencem a um
+usuário e a uma loteria.
 
 ### Frontend (React + TypeScript)
 
@@ -67,7 +76,7 @@ flowchart TB
 ```
 
 - **pages** — uma página por funcionalidade (dashboard, concursos, estatísticas,
-  simulação, validação, apostas).
+  simulação, desdobramento, validação e apostas).
 - **components** — elementos reutilizáveis (menu de autenticação, doação Pix).
 - **hooks** — estado de autenticação por cima do `keycloak-js`.
 - **services** — cliente HTTP (`api.ts`) e configuração do Keycloak
@@ -112,8 +121,8 @@ em um lugar previsível, sem cerimônia que não traga benefício.
 ### Princípios
 
 - **Responsabilidade única:** cada serviço cuida de um assunto — importar da
-  Caixa, importar planilha, calcular estatística, gerir apostas e montar a
-  doação.
+  Caixa, importar planilha, calcular estatística, gerir apostas e grupos, e
+  montar a doação.
 - **Injeção de dependência sim, interfaces ainda não:** os serviços são
   injetados como classes concretas; extrair interfaces é a evolução natural
   para testes e substituições.
@@ -126,13 +135,15 @@ em um lugar previsível, sem cerimônia que não traga benefício.
 | 1 | **Backend separado do frontend** (API REST + SPA) | Permite evoluir a interface e a API de forma independente e manter a regra de negócio fora do bundle público. |
 | 2 | **Delegar identidade ao Keycloak (OIDC)** | O projeto não armazena senhas; cadastro, confirmação de e-mail, MFA e futuros provedores sociais ficam no provedor. |
 | 3 | **Aposta associada ao `sub` do token** | Identidade do usuário sem duplicar tabela de usuários no domínio. |
-| 4 | **Validação do JWT no backend** | As rotas de aposta não confiam no frontend: a autorização é verificada onde o dado é gravado. |
+| 4 | **Validação do JWT no backend** | As rotas de aposta e de grupos não confiam no frontend: a autorização é verificada onde os dados são gravados. |
 | 5 | **Chave Pix apenas no backend** | O backend monta o BR Code e expõe só o QR; a chave não vai para o bundle do frontend. |
 | 6 | **Importação com busca binária na API da Caixa** | O endpoint da Caixa não informa o último concurso; a busca descobre o número atual. Gravação em transação única. |
 | 7 | **Importação por planilha via upload multipart** | O navegador não expõe o caminho real do arquivo; o upload é o caminho funcional para o histórico completo. |
 | 8 | **Backtest walk-forward com controle aleatório** | Mede as regras em concursos fora da amostra e contra um baseline, evitando conclusões por ajuste ao passado. |
 | 9 | **Tudo em pt-BR no domínio** | Nomes de entidades, DTOs e mensagens seguem o idioma do produto. |
 | 10 | **TLS e proxy no nginx** | Backend, banco e Keycloak ficam em rede interna; só o nginx é exposto. |
+| 11 | **Dimensão de loteria** | Evita assumir que números de concursos são globais; a chave do concurso inclui a modalidade. |
+| 12 | **Grupo de desdobramento separado da aposta** | Um grupo pode originar várias apostas e mantém seus próprios dados e validação. |
 
 ## Fluxos
 
@@ -182,6 +193,29 @@ sequenceDiagram
     A-->>F: aposta com conferência de acertos
 ```
 
+### Desdobramento e grupo
+
+```mermaid
+sequenceDiagram
+    participant U as Usuário
+    participant F as Frontend
+    participant A as API
+    participant S as Serviços
+    participant D as MySQL
+
+    U->>F: Configura um desdobramento
+    F->>A: GET /api/estatisticas/desdobramento
+    A->>S: solicita o resultado
+    S->>D: consulta o histórico
+    S-->>A: grupo e apostas gerados
+    A-->>F: resultado do desdobramento
+    U->>F: Salva o grupo ou uma aposta (logado)
+    F->>A: POST /api/grupos ou /api/apostas/simuladas
+    A->>S: valida usuário e loteria
+    S->>D: persiste grupo e vínculos
+    A-->>F: confirmação
+```
+
 ## Ambientes
 
 ### Local
@@ -229,7 +263,8 @@ de ambiente. Somente os nomes são documentados:
 
 - O repositório público **não contém** código-fonte, credenciais, strings de
   conexão, domínios internos nem dados de usuários.
-- O token OIDC é mantido apenas em memória no frontend e validado no backend.
+- O token OIDC é mantido apenas em memória no frontend e validado no backend;
+  apostas e grupos pertencem ao usuário autenticado.
 - A doação Pix é montada no servidor; a chave não é embutida no bundle.
 - Nenhum endpoint administrativo ou de reset de senha é exposto publicamente.
 

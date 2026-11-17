@@ -29,9 +29,9 @@ $raizScript = Split-Path -Parent $MyInvocation.MyCommand.Path
 if (-not $Projeto) { $Projeto = Join-Path $raizScript '..\..\AnaliseJogosCaixa' }
 if (-not $Saida) { $Saida = Join-Path $raizScript '..\Docs\ESTRUTURA.md' }
 
-$pastasIgnoradas = @('.git', '.idea', '.vs', 'bin', 'obj', 'node_modules', 'dist')
-$arquivosIgnorados = @('.env', 'Thumbs.db', 'Desktop.ini', '.DS_Store')
-$padroesIgnorados = @('*.user', '*.log', '*.log.*')
+$pastasIgnoradas = @('.git', '.idea', '.openchamber', '.vs', 'bin', 'obj', 'node_modules', 'dist')
+$arquivosIgnorados = @('.env', 'AGENTS.md', 'STATUS.md', 'Thumbs.db', 'Desktop.ini', '.DS_Store')
+$padroesIgnorados = @('*.user', '*.log', '*.log.*', '.env.*', '*.sql', '*.pem', '*.key', '*.pfx', '*.p12', '*backup*')
 
 function Test-Ignorado {
     param([System.IO.FileSystemInfo]$Item)

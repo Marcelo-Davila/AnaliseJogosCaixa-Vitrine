@@ -3,7 +3,7 @@
 Árvore de pastas e arquivos gerada a partir do repositório de código (privado).
 Mostra a organização do projeto sem expor o conteúdo dos arquivos.
 
-Gerado em 18/09/2026 22:04 por `scripts/gerar-estrutura.ps1`.
+Gerado em 17/11/2026 12:35 por `scripts/gerar-estrutura.ps1`.
 
 ```
 AnaliseJogosCaixa/
@@ -13,7 +13,8 @@ AnaliseJogosCaixa/
 │       │   ├── ApostasController.cs
 │       │   ├── ConcursosController.cs
 │       │   ├── DoacaoController.cs
-│       │   └── EstatisticasController.cs
+│       │   ├── EstatisticasController.cs
+│       │   └── GruposController.cs
 │       ├── Data/
 │       │   └── ContextoMegaSena.cs
 │       ├── Migrations/
@@ -21,16 +22,26 @@ AnaliseJogosCaixa/
 │       │   ├── 20260815183243_Inicial.Designer.cs
 │       │   ├── 20260830164516_ControleApostas.cs
 │       │   ├── 20260830164516_ControleApostas.Designer.cs
+│       │   ├── 20261005231840_ConcursoDaAposta.cs
+│       │   ├── 20261005231840_ConcursoDaAposta.Designer.cs
+│       │   ├── 20261005233135_ValidacaoPersistidaAposta.cs
+│       │   ├── 20261005233135_ValidacaoPersistidaAposta.Designer.cs
+│       │   ├── 20261006002400_MultiLoteria.cs
+│       │   ├── 20261006002400_MultiLoteria.Designer.cs
+│       │   ├── 20261016012524_GrupoDesdobramento.cs
+│       │   ├── 20261016012524_GrupoDesdobramento.Designer.cs
 │       │   └── ContextoMegaSenaModelSnapshot.cs
 │       ├── Model/
 │       │   ├── Dto/
 │       │   │   ├── AcertosPorDezenas.cs
+│       │   │   ├── AlterarConcursoRequest.cs
 │       │   │   ├── ApostaResposta.cs
 │       │   │   ├── AtrasoDezena.cs
 │       │   │   ├── ConcursoResposta.cs
 │       │   │   ├── ConferenciaAposta.cs
 │       │   │   ├── CriarApostaRequest.cs
 │       │   │   ├── FrequenciaDezena.cs
+│       │   │   ├── GrupoResposta.cs
 │       │   │   ├── ImportacaoArquivoRequest.cs
 │       │   │   ├── ImportacaoRequest.cs
 │       │   │   ├── JogoSimulado.cs
@@ -38,6 +49,7 @@ AnaliseJogosCaixa/
 │       │   │   ├── RespostaAcertosPorDezenas.cs
 │       │   │   ├── RespostaBacktest.cs
 │       │   │   ├── RespostaCaixa.cs
+│       │   │   ├── RespostaDesdobramento.cs
 │       │   │   ├── RespostaDoacao.cs
 │       │   │   ├── RespostaFrequencia.cs
 │       │   │   ├── RespostaPadroes.cs
@@ -47,16 +59,25 @@ AnaliseJogosCaixa/
 │       │   │   └── RetrospectoJogo.cs
 │       │   ├── Aposta.cs
 │       │   ├── ApostaDezena.cs
+│       │   ├── ApostaValidacao.cs
 │       │   ├── Concurso.cs
-│       │   └── ConcursoDezena.cs
+│       │   ├── ConcursoDezena.cs
+│       │   ├── GrupoDesdobramento.cs
+│       │   ├── GrupoDesdobramentoDezena.cs
+│       │   ├── GrupoDesdobramentoValidacao.cs
+│       │   ├── IValidacaoDezenas.cs
+│       │   └── Loteria.cs
 │       ├── Properties/
 │       │   └── launchSettings.json
 │       ├── Services/
+│       │   ├── ConferenciaDezenas.cs
 │       │   ├── ServicoAposta.cs
 │       │   ├── ServicoDoacao.cs
 │       │   ├── ServicoEstatistica.cs
+│       │   ├── ServicoGrupo.cs
 │       │   ├── ServicoImportacaoCaixa.cs
-│       │   └── ServicoImportacaoExcel.cs
+│       │   ├── ServicoImportacaoExcel.cs
+│       │   └── ServicoSincronizacaoEc2.cs
 │       ├── AnaliseJogosCaixa.Api.csproj
 │       ├── AnaliseJogosCaixa.Api.http
 │       ├── appsettings.Development.json
@@ -65,8 +86,10 @@ AnaliseJogosCaixa/
 │       └── WeatherForecast.cs
 ├── Docs/
 │   ├── AUTENTICACAO.md
+│   ├── DEPLOY.md
 │   ├── PLANO_CONTROLE_APOSTAS.md
-│   └── PROXIMOS_PASSOS.md
+│   ├── PROXIMOS_PASSOS.md
+│   └── SIMULACAO.md
 ├── frontend/
 │   ├── public/
 │   │   ├── favicon.svg
@@ -87,6 +110,7 @@ AnaliseJogosCaixa/
 │   │   │   ├── AtrasoPage.tsx
 │   │   │   ├── ConcursosPage.tsx
 │   │   │   ├── DashboardPage.tsx
+│   │   │   ├── DesdobramentoPage.tsx
 │   │   │   ├── FrequenciaPage.tsx
 │   │   │   ├── HomePage.tsx
 │   │   │   ├── PadroesPage.tsx
@@ -95,12 +119,13 @@ AnaliseJogosCaixa/
 │   │   ├── services/
 │   │   │   ├── api.ts
 │   │   │   └── autenticacao.ts
+│   │   ├── utils/
+│   │   │   └── identidade.ts
 │   │   ├── App.css
 │   │   ├── App.tsx
 │   │   ├── index.css
 │   │   ├── main.tsx
 │   │   └── types.ts
-│   ├── .env.example
 │   ├── .gitignore
 │   ├── .oxlintrc.json
 │   ├── index.html
@@ -112,7 +137,9 @@ AnaliseJogosCaixa/
 │   ├── tsconfig.node.json
 │   └── vite.config.ts
 ├── .gitignore
-├── AGENTS.md
+├── iniciar.bat
 ├── iniciar.ps1
+├── publicar.bat
+├── publicar.ps1
 └── README.md
 ```
